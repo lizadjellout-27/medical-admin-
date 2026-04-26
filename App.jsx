@@ -1,10 +1,5 @@
 // App.jsx — Clinic Admin Dashboard
-// Fully responsive: mobile (< 640px), tablet (640–1024px), desktop (> 1024px)
-// Dark / Light mode toggle included
-
 import { useState } from "react";
-
-// ── Global CSS ────────────────────────────────────────────────────────────────
 
 const GLOBAL_CSS = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -64,18 +59,15 @@ const GLOBAL_CSS = `
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
 
-  /* ── Layout ── */
   .app-root    { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
   .app-body    { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-  /* ── Sidebar overlay (mobile/tablet) ── */
   .sidebar-overlay {
     display: none; position: fixed; inset: 0;
     background: rgba(0,0,0,0.4); z-index: 40;
   }
   .sidebar-overlay.show { display: block; }
 
-  /* ── Sidebar ── */
   .sidebar {
     position: fixed; top: 0; left: 0; bottom: 0;
     width: var(--sidebar-w);
@@ -88,14 +80,12 @@ const GLOBAL_CSS = `
                 background-color 0.22s, border-color 0.22s;
   }
 
-  /* Desktop: sidebar always visible, main offset */
   .main-content {
     flex: 1; overflow-y: auto;
     padding: 28px;
     margin-left: var(--sidebar-w);
   }
 
-  /* ── Top bar (hidden on desktop) ── */
   .top-bar {
     display: none;
     height: 52px; padding: 0 16px;
@@ -106,7 +96,6 @@ const GLOBAL_CSS = `
     flex-shrink: 0;
   }
 
-  /* ── Bottom nav (hidden on desktop) ── */
   .bottom-nav {
     display: none;
     height: var(--bottom-nav-h);
@@ -125,7 +114,6 @@ const GLOBAL_CSS = `
   }
   .bnav-btn.active { color: var(--accent); }
 
-  /* ── Tablet / Mobile breakpoint ── */
   @media (max-width: 1024px) {
     .sidebar {
       transform: translateX(-110%);
@@ -148,7 +136,6 @@ const GLOBAL_CSS = `
     .main-content { padding: 12px; padding-bottom: calc(var(--bottom-nav-h) + 8px); }
   }
 
-  /* ── Stats grid ── */
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -157,7 +144,6 @@ const GLOBAL_CSS = `
   @media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 480px)  { .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
 
-  /* ── Panels grid ── */
   .panels-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -165,18 +151,15 @@ const GLOBAL_CSS = `
   }
   @media (max-width: 860px) { .panels-grid { grid-template-columns: 1fr; } }
 
-  /* ── Records header ── */
   .records-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
   @media (max-width: 480px) {
     .records-header { flex-direction: column; }
     .records-header .add-btn { align-self: flex-start; }
   }
 
-  /* ── Table horizontal scroll ── */
   .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   table { width: 100%; border-collapse: collapse; min-width: 500px; }
 
-  /* ── Toggle pill ── */
   .toggle-pill {
     width: 36px; height: 20px; border-radius: 999px;
     position: relative; border: none; cursor: pointer; flex-shrink: 0;
@@ -189,7 +172,6 @@ const GLOBAL_CSS = `
   }
   .toggle-pill.on::after { transform: translateX(16px); }
 
-  /* ── Modal ── */
   .modal-overlay {
     position: fixed; inset: 0;
     background: var(--modal-overlay);
@@ -204,7 +186,6 @@ const GLOBAL_CSS = `
     max-height: 90vh; overflow-y: auto;
   }
 
-  /* ── Logout modal ── */
   .logout-modal-box {
     background: var(--bg-primary);
     border: 0.5px solid var(--border);
@@ -213,16 +194,15 @@ const GLOBAL_CSS = `
     text-align: center;
   }
 
-  /* ── Misc ── */
   .page-title { font-size: 22px; font-weight: 500; color: var(--text-primary); }
   @media (max-width: 480px) { .page-title { font-size: 18px; } }
 
   button { font-family: inherit; }
-  input, select { font-family: inherit; }
+  input, select, textarea { font-family: inherit; }
   input[type="date"] { color-scheme: light dark; }
 `;
 
-// ── Data ─────────────────────────────────────────────────────────────────────
+// ── Data ──────────────────────────────────────────────────────────────────────
 
 const STATS = [
   { label: "Total Doctors",        value: 3, icon: "doctors"  },
@@ -235,7 +215,7 @@ const ACTIVITY = [
   { initials: "AD", bg: "#E1F5EE", color: "#085041", user: "admin_user", action: "Updated patient record for", target: "Omar Hassan",     time: "Apr 17, 8:31 PM" },
   { initials: "DR", bg: "#E6F1FB", color: "#0C447C", user: "dr_fatima",  action: "Visited the",                target: "patient Layla M.", time: "Apr 17, 8:31 PM" },
   { initials: "DR", bg: "#FAEEDA", color: "#633806", user: "dr_ahmed",   action: "Deleted expired prescription record", target: "",       time: "Apr 17, 8:31 PM" },
-  { initials: "DR", bg: "#FBEAF0", color: "#8e68a8", user: "dr_rania",  action: "Did an operation",           target: "",                time: "Apr 17, 8:15 PM" },
+  { initials: "DR", bg: "#FBEAF0", color: "#8e68a8", user: "dr_rania",   action: "Did an operation",           target: "",                time: "Apr 17, 8:15 PM" },
 ];
 
 const SCHEDULES = [
@@ -248,11 +228,11 @@ const SCHEDULES = [
 ];
 
 const INITIAL_RECORDS = [
-  { id: 1, patient: "Afaf Bahri",      doctor: "Dr. Aya Chaib",   date: "27 Mar 2026", status: "Active"   },
-  { id: 2, patient: "Omar Hassan",     doctor: "Dr. Ahmed Malik", date: "15 Apr 2026", status: "Active"   },
-  { id: 3, patient: "Layla Messaoudi", doctor: "Dr. Aya Chaib",   date: "10 Apr 2026", status: "Archived" },
-  { id: 4, patient: "Karim Benali",    doctor: "Dr. Youssef Aït", date: "02 Apr 2026", status: "Active"   },
-  { id: 5, patient: "Nadia Bouzid",    doctor: "Dr. Ahmed Malik", date: "20 Mar 2026", status: "Archived" },
+  { id: 1, patient: "Afaf Bahri",      doctor: "Dr. Aya Chaib",   date: "27 Mar 2026", status: "Active",   situation: "Routine check-up. No acute complaints reported." },
+  { id: 2, patient: "Omar Hassan",     doctor: "Dr. Ahmed Malik", date: "15 Apr 2026", status: "Active",   situation: "Post-operative follow-up after appendectomy. Patient recovering well, mild pain reported." },
+  { id: 3, patient: "Layla Messaoudi", doctor: "Dr. Aya Chaib",   date: "10 Apr 2026", status: "Archived", situation: "Completed treatment for hypertension. Discharged successfully." },
+  { id: 4, patient: "Karim Benali",    doctor: "Dr. Youssef Aït", date: "02 Apr 2026", status: "Active",   situation: "Diabetes management ongoing. Awaiting latest lab results." },
+  { id: 5, patient: "Nadia Bouzid",    doctor: "Dr. Ahmed Malik", date: "20 Mar 2026", status: "Archived", situation: "Recovered from respiratory infection. File closed." },
 ];
 
 const NAV_ITEMS = [
@@ -364,7 +344,6 @@ const I = {
       <line x1="14" y1="4" x2="4" y2="14" stroke={c} strokeWidth="1.5" strokeLinecap="round"/>
     </svg>
   ),
-  // Warning icon for logout modal
   Warning: ({ size = 40 }) => (
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
       <circle cx="20" cy="20" r="18" fill="#FCEBEB" stroke="#F7C1C1" strokeWidth="1.5"/>
@@ -409,29 +388,22 @@ const StatIcons = {
   ),
 };
 
-// ── Logout Confirmation Modal ─────────────────────────────────────────────────
+// ── Logout Modal ──────────────────────────────────────────────────────────────
 
 function LogoutModal({ open, onCancel, onConfirm }) {
   if (!open) return null;
   return (
     <div className="modal-overlay" onClick={onCancel}>
       <div className="logout-modal-box" onClick={e => e.stopPropagation()}>
-        {/* Icon */}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
           <I.Warning size={48} />
         </div>
-
-        {/* Title */}
         <h2 style={{ fontSize: 17, fontWeight: 500, color: "var(--text-primary)", marginBottom: 8 }}>
           Log out of Clinic Admin?
         </h2>
-
-        {/* Subtitle */}
         <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.55, marginBottom: 24 }}>
           You will be signed out of your session. Any unsaved changes may be lost.
         </p>
-
-        {/* Actions */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <button
             onClick={onConfirm}
@@ -446,7 +418,6 @@ function LogoutModal({ open, onCancel, onConfirm }) {
             <I.Logout c="var(--delete-color)" />
             Yes, log me out
           </button>
-
           <button
             onClick={onCancel}
             style={{
@@ -590,10 +561,10 @@ function Dashboard() {
 
 function MedicalRecords() {
   const [records, setRecords] = useState(INITIAL_RECORDS);
-  const [search, setSearch]   = useState("");
+  const [search,  setSearch]  = useState("");
   const [showAdd, setShowAdd] = useState(false);
   const [viewRec, setViewRec] = useState(null);
-  const [form, setForm]       = useState({ patient: "", doctor: "", date: "", status: "Active" });
+  const [form,    setForm]    = useState({ patient: "", doctor: "", date: "", status: "Active", situation: "" });
   const [formErr, setFormErr] = useState("");
 
   const filtered = records.filter(r =>
@@ -609,12 +580,15 @@ function MedicalRecords() {
     }
     setRecords(p => [{
       id: Date.now(),
-      patient: form.patient, doctor: form.doctor,
-      date: new Date(form.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }),
-      status: form.status,
+      patient:   form.patient,
+      doctor:    form.doctor,
+      date:      new Date(form.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }),
+      status:    form.status,
+      situation: form.situation,
     }, ...p]);
-    setForm({ patient: "", doctor: "", date: "", status: "Active" });
-    setFormErr(""); setShowAdd(false);
+    setForm({ patient: "", doctor: "", date: "", status: "Active", situation: "" });
+    setFormErr("");
+    setShowAdd(false);
   };
 
   const td = (extra = {}) => ({
@@ -721,31 +695,79 @@ function MedicalRecords() {
         </div>
       </div>
 
-      {/* View Modal */}
+      {/* ── View Modal ── */}
       <Modal open={!!viewRec} onClose={() => setViewRec(null)} title="Record Details">
-        {viewRec && [["Patient", viewRec.patient], ["Doctor", viewRec.doctor], ["Created", viewRec.date], ["Status", viewRec.status]].map(([k, v]) => (
-          <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "0.5px solid var(--border)" }}>
-            <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{k}</span>
-            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)" }}>{v}</span>
-          </div>
-        ))}
-        <button onClick={() => setViewRec(null)} style={{ marginTop: 20, width: "100%", padding: "10px", borderRadius: 8, border: "none", background: "var(--accent)", color: "#fff", fontSize: 13, fontWeight: 500, cursor: "pointer" }}>
-          Close
-        </button>
+        {viewRec && (
+          <>
+            {[
+              ["Patient",   viewRec.patient],
+              ["Doctor",    viewRec.doctor],
+              ["Created",   viewRec.date],
+            ].map(([k, v]) => (
+              <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "0.5px solid var(--border)" }}>
+                <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{k}</span>
+                <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-primary)" }}>{v}</span>
+              </div>
+            ))}
+
+            {/* Situation — full-width block */}
+            <div style={{ padding: "12px 0", borderBottom: "0.5px solid var(--border)" }}>
+              <span style={{ fontSize: 13, color: "var(--text-secondary)", display: "block", marginBottom: 8 }}>
+                Situation
+              </span>
+              <div style={{
+                background: "var(--bg-tertiary)",
+                border: "0.5px solid var(--border)",
+                borderRadius: 8,
+                padding: "10px 12px",
+                fontSize: 13,
+                color: "var(--text-primary)",
+                lineHeight: 1.6,
+              }}>
+                {viewRec.situation || "—"}
+              </div>
+            </div>
+
+            <button
+              onClick={() => setViewRec(null)}
+              style={{ marginTop: 20, width: "100%", padding: "10px", borderRadius: 8, border: "none", background: "var(--accent)", color: "#fff", fontSize: 13, fontWeight: 500, cursor: "pointer" }}
+            >
+              Close
+            </button>
+          </>
+        )}
       </Modal>
 
-      {/* Add Modal */}
+      {/* ── Add Modal ── */}
       <Modal open={showAdd} onClose={() => setShowAdd(false)} title="Add New Record">
-        <FormInput label="Patient Name"    type="text" placeholder="e.g. Sara Amrani"     value={form.patient} onChange={e => setForm(p => ({ ...p, patient: e.target.value }))} />
-        <FormInput label="Assigned Doctor" type="text" placeholder="e.g. Dr. Youssef Aït" value={form.doctor}  onChange={e => setForm(p => ({ ...p, doctor:  e.target.value }))} />
-        <FormInput label="Date Created"    type="date" placeholder=""                      value={form.date}    onChange={e => setForm(p => ({ ...p, date:    e.target.value }))} />
+        <FormInput label="Patient Name"    type="text" placeholder="e.g. Sara Amrani"      value={form.patient} onChange={e => setForm(p => ({ ...p, patient: e.target.value }))} />
+        <FormInput label="Assigned Doctor" type="text" placeholder="e.g. Dr. Youssef Aït"  value={form.doctor}  onChange={e => setForm(p => ({ ...p, doctor:  e.target.value }))} />
+        <FormInput label="Date Created"    type="date" placeholder=""                       value={form.date}    onChange={e => setForm(p => ({ ...p, date:    e.target.value }))} />
         <div style={{ marginBottom: 14 }}>
           <label style={{ fontSize: 12, color: "var(--text-secondary)", display: "block", marginBottom: 5 }}>Status</label>
-          <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}
-            style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "0.5px solid var(--border)", fontSize: 13, color: "var(--text-primary)", background: "var(--input-bg)", outline: "none" }}>
+          <select
+            value={form.status}
+            onChange={e => setForm(p => ({ ...p, status: e.target.value }))}
+            style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "0.5px solid var(--border)", fontSize: 13, color: "var(--text-primary)", background: "var(--input-bg)", outline: "none" }}
+          >
             <option value="Active">Active</option>
             <option value="Archived">Archived</option>
           </select>
+        </div>
+        <div style={{ marginBottom: 14 }}>
+          <label style={{ fontSize: 12, color: "var(--text-secondary)", display: "block", marginBottom: 5 }}>Patient Situation</label>
+          <textarea
+            placeholder="Describe the patient's current condition..."
+            value={form.situation}
+            onChange={e => setForm(p => ({ ...p, situation: e.target.value }))}
+            rows={3}
+            style={{
+              width: "100%", padding: "9px 12px", borderRadius: 8,
+              border: "0.5px solid var(--border)", fontSize: 13,
+              color: "var(--text-primary)", background: "var(--input-bg)",
+              outline: "none", resize: "vertical", boxSizing: "border-box",
+            }}
+          />
         </div>
         {formErr && <p style={{ fontSize: 12, color: "var(--delete-color)", marginBottom: 12 }}>{formErr}</p>}
         <div style={{ display: "flex", gap: 8 }}>
@@ -761,17 +783,14 @@ function MedicalRecords() {
   );
 }
 
-// ── Sidebar Component ─────────────────────────────────────────────────────────
+// ── Sidebar ───────────────────────────────────────────────────────────────────
 
 function SidebarPanel({ active, setActive, dark, onToggleDark, onLogout, open, onClose }) {
   const [logHover, setLogHover] = useState(false);
-
   return (
     <>
       <div className={`sidebar-overlay${open ? " show" : ""}`} onClick={onClose} />
       <aside className={`sidebar${open ? " open" : ""}`}>
-
-        {/* Logo + close */}
         <div style={{ padding: "0 16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
@@ -783,8 +802,6 @@ function SidebarPanel({ active, setActive, dark, onToggleDark, onLogout, open, o
             <I.X />
           </button>
         </div>
-
-        {/* Nav items */}
         <nav style={{ display: "flex", flexDirection: "column", gap: 2, padding: "0 12px", flex: 1 }}>
           {NAV_ITEMS.map(item => {
             const on = active === item.key;
@@ -802,27 +819,18 @@ function SidebarPanel({ active, setActive, dark, onToggleDark, onLogout, open, o
                 onMouseEnter={e => { if (!on) { e.currentTarget.style.background = "var(--bg-secondary)"; e.currentTarget.style.color = "var(--text-primary)"; }}}
                 onMouseLeave={e => { if (!on) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-secondary)"; }}}
               >
-                {item.key === "dashboard"
-                  ? <I.Grid c={on ? "#fff" : "currentColor"} />
-                  : <I.File c={on ? "#fff" : "currentColor"} />}
+                {item.key === "dashboard" ? <I.Grid c={on ? "#fff" : "currentColor"} /> : <I.File c={on ? "#fff" : "currentColor"} />}
                 {item.label}
               </button>
             );
           })}
         </nav>
-
-        {/* Footer */}
         <div style={{ padding: "8px 12px 0", borderTop: "0.5px solid var(--border)", marginTop: 8 }}>
-          {/* Theme toggle */}
           <div onClick={onToggleDark} style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", cursor: "pointer", borderRadius: 8 }}>
             {dark ? <I.Moon c="var(--text-secondary)" /> : <I.Sun c="var(--text-secondary)" />}
-            <span style={{ fontSize: 13, color: "var(--text-secondary)", flex: 1 }}>
-              {dark ? "Dark Mode" : "Light Mode"}
-            </span>
+            <span style={{ fontSize: 13, color: "var(--text-secondary)", flex: 1 }}>{dark ? "Dark Mode" : "Light Mode"}</span>
             <div className={`toggle-pill${dark ? " on" : ""}`} style={{ background: dark ? "var(--accent)" : "#e5e5e5" }} />
           </div>
-
-          {/* Logout — now triggers confirmation modal */}
           <button
             onMouseEnter={() => setLogHover(true)}
             onMouseLeave={() => setLogHover(false)}
@@ -844,7 +852,7 @@ function SidebarPanel({ active, setActive, dark, onToggleDark, onLogout, open, o
   );
 }
 
-// ── Top Bar (mobile / tablet) ─────────────────────────────────────────────────
+// ── Top Bar ───────────────────────────────────────────────────────────────────
 
 function TopBar({ active, onMenu, dark, onToggleDark }) {
   const label = NAV_ITEMS.find(n => n.key === active)?.label ?? "Dashboard";
@@ -868,7 +876,7 @@ function TopBar({ active, onMenu, dark, onToggleDark }) {
   );
 }
 
-// ── Bottom Nav (mobile / tablet) ──────────────────────────────────────────────
+// ── Bottom Nav ────────────────────────────────────────────────────────────────
 
 function BottomNav({ active, setActive }) {
   return (
@@ -878,8 +886,8 @@ function BottomNav({ active, setActive }) {
         return (
           <button key={item.key} className={`bnav-btn${on ? " active" : ""}`} onClick={() => setActive(item.key)}>
             {item.key === "dashboard"
-              ? <I.Grid  c={on ? "var(--accent)" : "var(--text-secondary)"} size={20} />
-              : <I.File  c={on ? "var(--accent)" : "var(--text-secondary)"} size={20} />}
+              ? <I.Grid c={on ? "var(--accent)" : "var(--text-secondary)"} size={20} />
+              : <I.File c={on ? "var(--accent)" : "var(--text-secondary)"} size={20} />}
             {item.label}
           </button>
         );
@@ -891,9 +899,9 @@ function BottomNav({ active, setActive }) {
 // ── Root App ──────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const [active,         setActive]         = useState("dashboard");
-  const [dark,           setDark]           = useState(false);
-  const [sidebarOpen,    setSidebarOpen]    = useState(false);
+  const [active,          setActive]          = useState("dashboard");
+  const [dark,            setDark]            = useState(false);
+  const [sidebarOpen,     setSidebarOpen]     = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const toggleDark = () => {
@@ -902,16 +910,13 @@ export default function App() {
     document.documentElement.setAttribute("data-theme", next ? "dark" : "");
   };
 
-  // Called when user clicks "Log out" in sidebar → show confirmation modal
   const handleLogoutRequest = () => {
-    setSidebarOpen(false); // close sidebar first (mobile UX)
+    setSidebarOpen(false);
     setShowLogoutModal(true);
   };
 
-  // Called when user confirms logout in modal
   const handleLogoutConfirm = () => {
     setShowLogoutModal(false);
-    // TODO: replace with your actual logout logic (e.g. clear auth token, redirect)
     alert("You have been logged out.");
   };
 
@@ -926,31 +931,21 @@ export default function App() {
   return (
     <>
       <style>{GLOBAL_CSS}</style>
-
       <div className="app-root">
-        {/* Top bar — visible only on mobile/tablet via CSS */}
         <TopBar active={active} onMenu={() => setSidebarOpen(true)} dark={dark} onToggleDark={toggleDark} />
-
         <div className="app-body">
-          {/* Sidebar */}
           <SidebarPanel
             active={active} setActive={setActive}
             dark={dark} onToggleDark={toggleDark}
             onLogout={handleLogoutRequest}
             open={sidebarOpen} onClose={() => setSidebarOpen(false)}
           />
-
-          {/* Page content */}
           <main className="main-content">
             {renderPage()}
           </main>
         </div>
-
-        {/* Bottom nav — visible only on mobile/tablet via CSS */}
         <BottomNav active={active} setActive={setActive} />
       </div>
-
-      {/* Logout confirmation modal — rendered outside app layout to avoid z-index issues */}
       <LogoutModal
         open={showLogoutModal}
         onCancel={() => setShowLogoutModal(false)}
@@ -959,4 +954,3 @@ export default function App() {
     </>
   );
 }
-
